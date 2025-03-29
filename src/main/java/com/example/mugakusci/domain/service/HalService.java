@@ -4,6 +4,10 @@ import com.example.mugakusci.client.IClient;
 import com.example.mugakusci.client.hal.HalResponse;
 import com.example.mugakusci.domain.model.SearchResponse;
 import com.example.mugakusci.domain.model.SimpleQuery;
+import com.example.mugakusci.domain.model.entry.SimpleEntry;
+
+import java.util.List;
+
 
 public class HalService implements IService {
 
@@ -15,9 +19,13 @@ public class HalService implements IService {
 
     @Override
     public SearchResponse search(SimpleQuery query) {
-        // TODO request to HAL
-        HalResponse response = client.retrieveResults(query);
-        System.out.println("HAL " + response);
-        return new SearchResponse(0,null);
+        // TODO request to Theses
+        HalResponse response = this.client.retrieveResults(query);
+        if (response != null) {
+            List<SimpleEntry> entries = response.body().docs().stream().map(doc -> new SimpleEntry(doc.label(), doc.uri())).toList();
+            return new SearchResponse(response.body().docs().size(), entries);
+        } else {
+            return new SearchResponse(0, null);
+        }
     }
 }
