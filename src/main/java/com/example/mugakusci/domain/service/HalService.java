@@ -19,7 +19,6 @@ public class HalService implements IService {
 
     @Override
     public SearchResponse search(SimpleQuery query) {
-        // TODO request to Theses
         HalResponse response = this.client.retrieveResults(query);
         if (response != null) {
             List<SimpleEntry> entries = response.body().docs().stream().map(doc -> new SimpleEntry(doc.label(), doc.uri())).toList();
